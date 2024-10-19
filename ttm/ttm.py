@@ -302,8 +302,7 @@ class MusicGenerationService(AIModelService):
                 # print(f'Normalized score for the hotkey: {axon.hotkey}')
                 tabulated_str2 = tabulate(table2, headers=[f"Normalized score for the hotkey:{axon.hotkey}", current_datetime], tablefmt="grid")
                 print(tabulated_str2)                
-                bt.logging.info(f"Aggregated Score KLD, FAD and Consistancy for hotkey: {score} {axon.hotkey}")
-                bt.logging.info(f"Aggregated Score from Smoothness, SNR and Consistancy Metric: {score}")
+                bt.logging.info(f"Aggregated Score KLD, FAD and Consistancy for hotkey {axon.hotkey} :  {score} ")
                 self.update_score(axon, score, service="Text-To-Music")
                 return output_path
     

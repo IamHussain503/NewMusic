@@ -27,13 +27,8 @@ class MetricEvaluator:
             target_waveform, target_sr = torchaudio.load(os.path.join(target_audio_dir, target))
             generated_waveform, generated_sr = torchaudio.load(os.path.join(generated_audio_dir, generate))
 
-            # Log waveform and sample rate info
-            bt.logging.info(f"Target waveform size: {target_waveform.shape}, Sample rate: {target_sr}, dtype: {target_waveform.dtype}")
-            bt.logging.info(f"Generated waveform size: {generated_waveform.shape}, Sample rate: {generated_sr}, dtype: {generated_waveform.dtype}")
-
             # Ensure sample rates match
             if target_sr != generated_sr:
-                bt.logging.info(f"Sample rates differ. Resampling generated waveform from {generated_sr} to {target_sr}.")
                 resampler = torchaudio.transforms.Resample(orig_freq=generated_sr, new_freq=target_sr)
                 generated_waveform = resampler(generated_waveform)
                 generated_sr = target_sr
@@ -196,7 +191,6 @@ class MusicQualityEvaluator:
       normalized_kld = self.normalizer.normalize_kld(kld_score)
       normalized_fad = self.normalizer.normalize_fad(fad_score)
 
-      bt.logging.info(f'Normalized Metrics: KLD = {normalized_kld}, Normalized Metrics: FAD = {normalized_fad}, Consistency = {consistency_score}')
       aggregate_quality = self.aggregator.geometric_mean({'KLD': normalized_kld, 'FAD': normalized_fad})
       aggregate_score = self.aggregator.geometric_mean({'quality': aggregate_quality, 'normalized_consistency': consistency_score}) if consistency_score > 0.1 else 0
         # Print scores in a table
