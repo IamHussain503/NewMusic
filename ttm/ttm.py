@@ -301,7 +301,8 @@ class MusicGenerationService(AIModelService):
                 single_line_tabulated_str = re.sub(r'\n+', ' ', tabulated_str)
                 
                 # Print the result
-                print(f'Raw score for the hotkey: {axon.hotkey} {single_line_tabulated_str}')                print("\n")
+                print(f'Raw score for the hotkey: {axon.hotkey} {single_line_tabulated_str}')                
+                print("\n")
                 # Generate the tabulated string
                 tabulated_str = tabulate(table2, headers=["Metric", "Normalized Score"], tablefmt="grid")
                 
@@ -311,7 +312,6 @@ class MusicGenerationService(AIModelService):
                 # Print the result
                 print(f'Normalized score for the hotkey: {axon.hotkey} {single_line_tabulated_str}')
                 bt.logging.info(f"Aggregated Score KLD, FAD and Consistancy for hotkey: {score} {axon.hotkey}")
-                bt.logging.info(f"Aggregated Score from Smoothness, SNR and Consistancy Metric: {score}")
                 self.update_score(axon, score, service="Text-To-Music")
                 return output_path
     
