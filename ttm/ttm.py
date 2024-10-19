@@ -295,11 +295,11 @@ class MusicGenerationService(AIModelService):
                     bt.logging.error(f"Error in penalizing the score: {e}")
                 
                 # Generate the tabulated string for table1
-                tabulated_str = tabulate(table1, headers=["Raw score for the hotkey:", f"{axon.hotkey}"], tablefmt="grid")
+                tabulated_str = tabulate(table1, headers=[f"Raw score for the hotkey:{axon.hotkey}", f"{datetime}"], tablefmt="grid")
                 print(tabulated_str)
                 print("\n")
                 # print(f'Normalized score for the hotkey: {axon.hotkey}')
-                tabulated_str2 = tabulate(table2, headers=["Normalized score for the hotkey:", f"{axon.hotkey}"], tablefmt="grid")
+                tabulated_str2 = tabulate(table2, headers=[f"Normalized score for the hotkey:{axon.hotkey}", f"{datetime}"], tablefmt="grid")
                 print(tabulated_str2)                
                 bt.logging.info(f"Aggregated Score KLD, FAD and Consistancy for hotkey: {score} {axon.hotkey}")
                 bt.logging.info(f"Aggregated Score from Smoothness, SNR and Consistancy Metric: {score}")
