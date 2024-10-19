@@ -152,7 +152,7 @@ class Normalizer:
         if fad_score is not None:
             if 0 <= fad_score <= 5:
                 normalized_fad = (5 - fad_score) / 5  # Normalize between 0 and 1 (higher is better)
-            elif 6 <= fad_score <= 10:
+            elif 5 < fad_score <= 10:
                 normalized_fad = 0.5 * (10 - fad_score) / 5  # Scale down between 0.5 and 0
             else:
                 normalized_fad = 0  # Anything > 10 is considered bad
@@ -160,18 +160,6 @@ class Normalizer:
             normalized_fad = 0
         return normalized_fad
 
-    @staticmethod
-    def normalize_consistency(score):
-        if score is not None:
-            if 0.6 <= score <= 1:
-                normalized_consistency = (score - 0.6) / 0.4  # Scale between 0 and 1 (good)
-            elif 0.2 <= score < 0.6:
-                normalized_consistency = (score - 0.2) / 0.4 * 0.5  # Scale between 0.5 and 0
-            else:
-                normalized_consistency = 0  # Anything < 0.2 is considered bad
-        else:
-            normalized_consistency = 0
-        return normalized_consistency
 
 class Aggregator:
     @staticmethod
@@ -191,29 +179,40 @@ class MusicQualityEvaluator:
 
       try:
           kld_score = self.metric_evaluator.calculate_kld(generated_audio_dir, target_audio_dir)
-          bt.logging.info(f'.......KLD......: {kld_score}')
       except:
           bt.logging.error(f"Failed to calculate KLD")
 
       try:
           fad_score = self.metric_evaluator.calculate_fad(generated_audio_dir, target_audio_dir)
-          bt.logging.info(f'.......FAD......: {fad_score}')
       except:
           bt.logging.error(f"Failed to calculate FAD")
 
       try:
           consistency_score = self.metric_evaluator.calculate_consistency(generated_audio_dir, text)
-          bt.logging.info(f'....... Consistency Score ......: {consistency_score}')
       except:
           bt.logging.error(f"Failed to calculate Consistency score")
 
       # Normalize scores and calculate aggregate score
       normalized_kld = self.normalizer.normalize_kld(kld_score)
       normalized_fad = self.normalizer.normalize_fad(fad_score)
-      normalized_consistency = self.normalizer.normalize_consistency(consistency_score)
 
-      bt.logging.info(f'Normalized Metrics: KLD = {normalized_kld}, Normalized Metrics: FAD = {normalized_fad}, Consistency = {normalized_consistency}')
+      bt.logging.info(f'Normalized Metrics: KLD = {normalized_kld}, Normalized Metrics: FAD = {normalized_fad}, Consistency = {consistency_score}')
       aggregate_quality = self.aggregator.geometric_mean({'KLD': normalized_kld, 'FAD': normalized_fad})
-      aggregate_score = self.aggregator.geometric_mean({'quality': aggregate_quality, 'normalized_consistency': normalized_consistency}) if consistency_score > 0.2 else 0
-      bt.logging.info(f'....... Aggregate Score ......: {aggregate_score}')
-      return aggregate_score
+      aggregate_score = self.aggregator.geometric_mean({'quality': aggregate_quality, 'normalized_consistency': consistency_score}) if consistency_score > 0.1 else 0
+        # Print scores in a table
+      table1 = [
+            ["KLD Score", kld_score],
+            ["FAD Score", fad_score],
+            ["Consistency Score", consistency_score]
+        ]
+
+      # Print table of normalized scores
+      table2 = [
+            ["Metric", "Score"],
+            ["Normalized KLD", normalized_kld],
+            ["Normalized FAD", normalized_fad],
+            ["Consistency Score", consistency_score]
+            ]
+           
+      
+      return aggregate_score, table1 , table2

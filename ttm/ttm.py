@@ -9,6 +9,7 @@ import numpy as np
 import torchaudio
 import contextlib
 import traceback
+import tabulate
 import asyncio
 import hashlib
 from datetime import datetime
@@ -280,7 +281,7 @@ class MusicGenerationService(AIModelService):
 
 
                 # score = self.score_output(output_path, self.audio_path,prompt)
-                score = self.score_output("/tmp/music/", output_dir,prompt)
+                score,table1,table2 = self.score_output("/tmp/music/", output_dir,prompt)
                 bt.logging.info(f"Score output after analysing the output file: {score}")
     
                 try:
@@ -291,7 +292,12 @@ class MusicGenerationService(AIModelService):
                         bt.logging.info(f"Duration is greater than 15 seconds. No need to penalize the score.")
                 except Exception as e:
                     bt.logging.error(f"Error in penalizing the score: {e}")
-    
+                print(f'Raw score for the hotkey: {axon.hotkey}')
+                print(tabulate(table1, headers=["Metric", "Raw Score"], tablefmt="grid"))
+                print("\n")
+                print(f'Normalized score for the hotkey: {axon.hotkey}')
+                print(tabulate(table2, headers=["Metric", "Normalized Score"], tablefmt="grid"))
+                bt.logging.info(f"Aggregated Score KLD, FAD and Consistancy for hotkey: {score} {axon.hotkey}")
                 bt.logging.info(f"Aggregated Score from Smoothness, SNR and Consistancy Metric: {score}")
                 self.update_score(axon, score, service="Text-To-Music")
                 return output_path
