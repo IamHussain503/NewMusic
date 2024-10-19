@@ -201,6 +201,7 @@ class MusicQualityEvaluator:
       aggregate_score = self.aggregator.geometric_mean({'quality': aggregate_quality, 'normalized_consistency': consistency_score}) if consistency_score > 0.1 else 0
         # Print scores in a table
       table1 = [
+            ["Metric", "Raw Score"],
             ["KLD Score", kld_score],
             ["FAD Score", fad_score],
             ["Consistency Score", consistency_score]
@@ -208,6 +209,7 @@ class MusicQualityEvaluator:
 
       # Print table of normalized scores
       table2 = [
+            ["Metric", "Normalized Score"],
             ["Normalized KLD", normalized_kld],
             ["Normalized FAD", normalized_fad],
             ["Consistency Score", consistency_score]
