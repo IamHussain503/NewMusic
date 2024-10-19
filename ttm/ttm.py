@@ -3,13 +3,13 @@ from ttm.ttm_score import MusicQualityEvaluator
 from ttm.protocol import MusicGeneration
 from ttm.aimodel import AIModelService
 from datasets import load_dataset
+from tabulate import tabulate
 import bittensor as bt
 import soundfile as sf
 import numpy as np
 import torchaudio
 import contextlib
 import traceback
-import tabulate
 import asyncio
 import hashlib
 from datetime import datetime
