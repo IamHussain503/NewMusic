@@ -208,7 +208,6 @@ class MusicQualityEvaluator:
 
       # Print table of normalized scores
       table2 = [
-            ["Metric", "Score"],
             ["Normalized KLD", normalized_kld],
             ["Normalized FAD", normalized_fad],
             ["Consistency Score", consistency_score]
