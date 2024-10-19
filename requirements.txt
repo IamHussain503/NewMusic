@@ -11,3 +11,5 @@ transformers
 datasets
 wandb
 pyngrok
+tabulate
+resampy

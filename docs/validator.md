@@ -31,6 +31,7 @@ git clone https://github.com/UncleTensor/BittAudio.git
 cd BittAudio
 pip install -e
 pip install laion_clap==1.1.4
+pip install git+https://github.com/haoheliu/audioldm_eval
 wandb login
 ```
 **Install pm2**
