@@ -294,24 +294,26 @@ class MusicGenerationService(AIModelService):
                 except Exception as e:
                     bt.logging.error(f"Error in penalizing the score: {e}")
                 # print(f'Raw score for the hotkey: {axon.hotkey}')
+                import re
+                from tabulate import tabulate
+                
                 # Generate the tabulated string for table1
                 tabulated_str = tabulate(table1, headers=["Metric", "Raw Score"], tablefmt="grid")
                 
+                # Insert the hotkey string into the header of the table
+                hotkey_header = f"Raw score for the hotkey: {axon.hotkey}"
+                tabulated_str_with_header = f"{hotkey_header}\n{tabulated_str}"
+                
                 # Replace newline characters with spaces
-                single_line_tabulated_str = re.sub(r'\n+', ' ', tabulated_str)
+                single_line_tabulated_str = re.sub(r'\n+', ' ', tabulated_str_with_header)
                 
                 # Print the result
-                print(f'Raw score for the hotkey: {axon.hotkey} {single_line_tabulated_str}')                
+                print(single_line_tabulated_str)
                 print("\n")
-                # Generate the tabulated string
-                tabulated_str = tabulate(table2, headers=["Metric", "Normalized Score"], tablefmt="grid")
-                
-                # Replace newline characters with spaces
-                single_line_tabulated_str = re.sub(r'\n+', ' ', tabulated_str)
-                
-                # Print the result
-                print(f'Normalized score for the hotkey: {axon.hotkey} {single_line_tabulated_str}')
+                # print(f'Normalized score for the hotkey: {axon.hotkey}')
+                print(f'Normalized score for the hotkey: {axon.hotkey}' + tabulate(table2, headers=["Metric", "Normalized Score"], tablefmt="grid"))
                 bt.logging.info(f"Aggregated Score KLD, FAD and Consistancy for hotkey: {score} {axon.hotkey}")
+                bt.logging.info(f"Aggregated Score from Smoothness, SNR and Consistancy Metric: {score}")
                 self.update_score(axon, score, service="Text-To-Music")
                 return output_path
     
