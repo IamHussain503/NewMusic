@@ -245,7 +245,7 @@ class MusicGenerationService(AIModelService):
             audio_data_int = audio_data_int_.unsqueeze(0)
             # get the .wav file from the path self.audio_path
             file_name = os.path.basename(self.audio_path)
-            bt.logging.info(f"Saving audio file to ================= {file_name}")
+            bt.logging.info(f"Saving audio file to =================>> {file_name}")
     
             # Save the audio data as a .wav file
 
@@ -281,10 +281,7 @@ class MusicGenerationService(AIModelService):
                 bt.logging.info(f"The is audio_path file is {self.audio_path}.")
 
 
-                # score = self.score_output(output_path, self.audio_path,prompt)
                 score,table1,table2 = self.score_output("/tmp/music/", output_dir,prompt)
-                bt.logging.info(f"Score output after analysing the output file: {score}")
-    
                 try:
                     if duration < 15:
                         score = self.score_adjustment(score, duration)
@@ -335,7 +332,6 @@ class MusicGenerationService(AIModelService):
         """Evaluates and returns the score for the generated music output."""
         try:
             score_object = MusicQualityEvaluator()
-            # generated_audio_dir = "/tmp/music", target_audio_dir="/root/metric_testing/audio_files"
             return score_object.evaluate_music_quality(output_path, target_audio, prompt)
         except Exception as e:
             bt.logging.error(f"Error scoring output: {e}")
