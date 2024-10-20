@@ -31,6 +31,7 @@ pip install audiocraft
 pip install laion_clap==1.1.4
 pip install git+https://github.com/haoheliu/audioldm_eval
 pip install git+https://github.com/kkoutini/passt_hear21@0.0.19#egg=hear21passt
+sudo mkdir -p /tmp/music
 wandb login
 ```
 **Install pm2**

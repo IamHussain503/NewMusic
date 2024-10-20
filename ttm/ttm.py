@@ -223,157 +223,34 @@ class MusicGenerationService(AIModelService):
             bt.logging.error(f'An error occurred while handling speech output: {e}')
 
     
-    # def handle_music_output(self, axon, music_output, prompt, model_name):
-    #     try:
-    #         import numpy as np
-    #         import wandb
-    #     except ImportError as e:
-    #         print(f"Error importing numpy or wandb: {e}")
-    #         return
-    
-    #     try:
-    #         # Convert the list to a tensor
-    #         speech_tensor = torch.Tensor(music_output)
-    
-    #         # Normalize the speech data
-    #         audio_data = speech_tensor / torch.max(torch.abs(speech_tensor))
-    
-    #         # Convert to 32-bit PCM
-    #         audio_data_int_ = (audio_data * 2147483647).type(torch.IntTensor)
-    
-    #         # Add an extra dimension to make it a 2D tensor
-    #         audio_data_int = audio_data_int_.unsqueeze(0)
-    #         # get the .wav file from the path self.audio_path
-    #         file_name = os.path.basename(self.audio_path)
-    #         bt.logging.info(f"Saving audio file to =================>> {file_name}")
-    
-    #         # Save the audio data as a .wav file
-
-    #         output_path = os.path.join('/tmp/music/', file_name)
-    #         sampling_rate = 32000
-    #         torchaudio.save(output_path, src=audio_data_int, sample_rate=sampling_rate)
-    #         bt.logging.info(f"Saved audio file to {output_path}")
-    
-    #         # Calculate the audio hash
-    #         audio_hash = hashlib.sha256(audio_data.numpy().tobytes()).hexdigest()
-    
-    #         # Check if the music hash is a duplicate
-    #         if check_duplicate_music(audio_hash):
-    #             bt.logging.info(f"Duplicate music detected from miner: {axon.hotkey}. Issuing punishment.")
-    #             self.punish(axon, service="Text-To-Music", punish_message="Duplicate music detected")
-    #         else:
-    #             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    #             save_hash_to_file(audio_hash, axon.hotkey, timestamp)
-    #             bt.logging.info(f"Music hash processed and saved successfully for miner: {axon.hotkey}")
-    
-    #             try:
-    #                 uid_in_metagraph = self.metagraph.hotkeys.index(axon.hotkey)
-    #                 audio_data_np = np.array(audio_data_int_)
-    #                 wandb.log({f"TTM prompt: {prompt[:100]} ....": wandb.Audio(audio_data_np, caption=f'For HotKey: {axon.hotkey[:10]} and uid {uid_in_metagraph}', sample_rate=sampling_rate)})
-    #                 bt.logging.success(f"TTM Audio file uploaded to wandb successfully for Hotkey {axon.hotkey} and UID {uid_in_metagraph}")
-    #             except Exception as e:
-    #                 bt.logging.error(f"Error uploading TTM audio file to wandb: {e}")
-    
-    #             duration = self.get_duration(output_path)
-    #             token = duration * 50.2
-    #             bt.logging.info(f"The duration of the audio file is {duration} seconds.")
-    #             bt.logging.info(f"The is is output_path file is {output_path}.")
-    #             bt.logging.info(f"The is audio_path file is {self.audio_path}.")
-
-
-    #             score,table1,table2 = self.score_output("/tmp/music/", output_dir,prompt)
-    #             try:
-    #                 if duration < 15:
-    #                     score = self.score_adjustment(score, duration)
-    #                     bt.logging.info(f"Score updated based on short duration than the required by the client: {score}")
-    #                 else:
-    #                     bt.logging.info(f"Duration is greater than 15 seconds. No need to penalize the score.")
-    #             except Exception as e:
-    #                 bt.logging.error(f"Error in penalizing the score: {e}")
-                
-    #             # Generate the tabulated string for table1
-    #             current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    #             tabulated_str = tabulate(table1, headers=[f"Raw score for the hotkey:{axon.hotkey}", current_datetime], tablefmt="grid")
-    #             print(tabulated_str)
-    #             print("\n")
-    #             # print(f'Normalized score for the hotkey: {axon.hotkey}')
-    #             tabulated_str2 = tabulate(table2, headers=[f"Normalized score for the hotkey:{axon.hotkey}", current_datetime], tablefmt="grid")
-    #             print(tabulated_str2)                
-    #             bt.logging.info(f"Aggregated Score KLD, FAD and Consistancy for hotkey {axon.hotkey} :  {score} ")
-    #             self.update_score(axon, score, service="Text-To-Music")
-    #             return output_path
-    
-    #     except Exception as e:
-    #         bt.logging.error(f"Error processing Music output: {e}")
-    #         raise  # Re-raise the exception to get the full traceback
-
-
     def handle_music_output(self, axon, music_output, prompt, model_name):
-        try:
-            import numpy as np
-            import wandb
-            import os
-            import torch
-            import torchaudio
-            import hashlib
-            from datetime import datetime
-            from tabulate import tabulate
-            bt.logging.info("Necessary libraries imported successfully.")
-        except ImportError as e:
-            print(f"Error importing necessary libraries: {e}")
-            return
-
+        
         try:
             # Convert the list to a tensor
             speech_tensor = torch.Tensor(music_output)
-            bt.logging.info("Converted music output to tensor successfully.")
-        except Exception as e:
-            bt.logging.error(f"Error converting music output to tensor: {e}")
-            return
-        
-        try:
+    
             # Normalize the speech data
             audio_data = speech_tensor / torch.max(torch.abs(speech_tensor))
-            bt.logging.info("Normalized the audio data.")
-        except Exception as e:
-            bt.logging.error(f"Error normalizing audio data: {e}")
-            return
-        
-        try:
+    
             # Convert to 32-bit PCM
             audio_data_int_ = (audio_data * 2147483647).type(torch.IntTensor)
-            bt.logging.info("Converted audio data to 32-bit PCM.")
-        
+    
             # Add an extra dimension to make it a 2D tensor
             audio_data_int = audio_data_int_.unsqueeze(0)
-            bt.logging.info("Added an extra dimension to audio data.")
-        except Exception as e:
-            bt.logging.error(f"Error converting audio data to 32-bit PCM: {e}")
-            return
-
-        try:
-            # Get the .wav file from the path
+            # get the .wav file from the path self.audio_path
             file_name = os.path.basename(self.audio_path)
-            bt.logging.info(f"Saving audio file to: {file_name}")
-        
+            bt.logging.info(f"Saving audio file to =================>> {file_name}")
+    
             # Save the audio data as a .wav file
+
             output_path = os.path.join('/tmp/music/', file_name)
             sampling_rate = 32000
             torchaudio.save(output_path, src=audio_data_int, sample_rate=sampling_rate)
             bt.logging.info(f"Saved audio file to {output_path}")
-        except Exception as e:
-            bt.logging.error(f"Error saving audio file: {e}")
-            return
-
-        try:
+    
             # Calculate the audio hash
             audio_hash = hashlib.sha256(audio_data.numpy().tobytes()).hexdigest()
-            bt.logging.info("Calculated audio hash.")
-        except Exception as e:
-            bt.logging.error(f"Error calculating audio hash: {e}")
-            return
-        
-        try:
+    
             # Check if the music hash is a duplicate
             if check_duplicate_music(audio_hash):
                 bt.logging.info(f"Duplicate music detected from miner: {axon.hotkey}. Issuing punishment.")
@@ -382,55 +259,47 @@ class MusicGenerationService(AIModelService):
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 save_hash_to_file(audio_hash, axon.hotkey, timestamp)
                 bt.logging.info(f"Music hash processed and saved successfully for miner: {axon.hotkey}")
-        except Exception as e:
-            bt.logging.error(f"Error checking or saving music hash: {e}")
-            return
-        
-        try:
-            # Log the audio to wandb
-            uid_in_metagraph = self.metagraph.hotkeys.index(axon.hotkey)
-            audio_data_np = np.array(audio_data_int_)
-            wandb.log({
-                f"TTM prompt: {prompt[:100]} ....": wandb.Audio(audio_data_np, caption=f'For HotKey: {axon.hotkey[:10]} and uid {uid_in_metagraph}', sample_rate=sampling_rate)
-            })
-            bt.logging.success(f"TTM Audio file uploaded to wandb successfully for Hotkey {axon.hotkey} and UID {uid_in_metagraph}")
-        except Exception as e:
-            bt.logging.error(f"Error uploading TTM audio file to wandb: {e}")
-        
-        try:
-            # Get audio duration
-            duration = self.get_duration(output_path)
-            token = duration * 50.2
-            bt.logging.info(f"The duration of the audio file is {duration} seconds.")
-        except Exception as e:
-            bt.logging.error(f"Error calculating audio duration: {e}")
-            return
+    
+                try:
+                    uid_in_metagraph = self.metagraph.hotkeys.index(axon.hotkey)
+                    audio_data_np = np.array(audio_data_int_)
+                    wandb.log({f"TTM prompt: {prompt[:100]} ....": wandb.Audio(audio_data_np, caption=f'For HotKey: {axon.hotkey[:10]} and uid {uid_in_metagraph}', sample_rate=sampling_rate)})
+                    bt.logging.success(f"TTM Audio file uploaded to wandb successfully for Hotkey {axon.hotkey} and UID {uid_in_metagraph}")
+                except Exception as e:
+                    bt.logging.error(f"Error uploading TTM audio file to wandb: {e}")
+    
+                duration = self.get_duration(output_path)
+                token = duration * 50.2
+                bt.logging.info(f"The duration of the audio file is {duration} seconds.")
+                bt.logging.info(f"The is is output_path file is {output_path}.")
+                bt.logging.info(f"The is audio_path file is {self.audio_path}.")
 
-        try:
-            score, table1, table2 = self.score_output("/tmp/music/", output_path, prompt)
-            if duration < 15:
-                score = self.score_adjustment(score, duration)
-                bt.logging.info(f"Score updated based on short duration than required: {score}")
-            else:
-                bt.logging.info(f"Duration is greater than 15 seconds. No need to penalize the score.")
-        except Exception as e:
-            bt.logging.error(f"Error scoring the output: {e}")
-            return
 
-        try:
-            current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            tabulated_str = tabulate(table1, headers=[f"Raw score for hotkey:{axon.hotkey}", current_datetime], tablefmt="grid")
-            print(tabulated_str)
-            print("\n")
-            tabulated_str2 = tabulate(table2, headers=[f"Normalized score for hotkey:{axon.hotkey}", current_datetime], tablefmt="grid")
-            print(tabulated_str2)
-            bt.logging.info(f"Aggregated Score for hotkey {axon.hotkey}: {score}")
-            self.update_score(axon, score, service="Text-To-Music")
+                score,table1,table2 = self.score_output("/tmp/music/", output_dir,prompt)
+                try:
+                    if duration < 15:
+                        score = self.score_adjustment(score, duration)
+                        bt.logging.info(f"Score updated based on short duration than the required by the client: {score}")
+                    else:
+                        bt.logging.info(f"Duration is greater than 15 seconds. No need to penalize the score.")
+                except Exception as e:
+                    bt.logging.error(f"Error in penalizing the score: {e}")
+                
+                # Generate the tabulated string for table1
+                current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                tabulated_str = tabulate(table1, headers=[f"Raw score for the hotkey:{axon.hotkey}", current_datetime], tablefmt="grid")
+                print(tabulated_str)
+                print("\n")
+                # print(f'Normalized score for the hotkey: {axon.hotkey}')
+                tabulated_str2 = tabulate(table2, headers=[f"Normalized score for the hotkey:{axon.hotkey}", current_datetime], tablefmt="grid")
+                print(tabulated_str2)                
+                bt.logging.info(f"Aggregated Score KLD, FAD and Consistancy for hotkey {axon.hotkey} :  {score} ")
+                self.update_score(axon, score, service="Text-To-Music")
+                return output_path
+    
         except Exception as e:
-            bt.logging.error(f"Error generating score tables or updating score: {e}")
-            return
-        
-        return output_path
+            bt.logging.error(f"Error processing Music output: {e}")
+            raise  # Re-raise the exception to get the full traceback
 
 
     def get_duration(self, wav_file_path):
