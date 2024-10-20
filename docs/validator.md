@@ -25,7 +25,7 @@ conda activate {conda-env}
 sudo apt update
 sudo apt install build-essential -y
 git clone https://github.com/IamHussain503/NewMusic.git
-cd BittAudio
+cd NewMusic
 pip install -e.
 pip install audiocraft
 pip install laion_clap==1.1.4
