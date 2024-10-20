@@ -407,6 +407,7 @@ class MusicGenerationService(AIModelService):
             return
 
         try:
+            refrence_dir = self.audio_path
             score, table1, table2 = self.score_output("/tmp/music/", refrence_dir, prompt)
             if duration < 15:
                 score = self.score_adjustment(score, duration)
