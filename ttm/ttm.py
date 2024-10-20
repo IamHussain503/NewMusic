@@ -28,7 +28,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 audio_subnet_path = os.path.abspath(project_root)
 sys.path.insert(0, project_root)
 sys.path.insert(0, audio_subnet_path)
-output_dir = "audio_files"  # Directory to save the audio files
+refrence_dir = "audio_files"  # Directory to save the audio files
 class MusicGenerationService(AIModelService):
     def __init__(self):
         super().__init__()  
@@ -73,8 +73,8 @@ class MusicGenerationService(AIModelService):
                 sample_rate = file_path['sampling_rate']
 
                 # Save the audio to a file
-                os.makedirs(output_dir, exist_ok=True)  # Create output directory if it doesn't exist
-                audio_path = os.path.join(output_dir, "random_sample.wav")
+                os.makedirs(refrence_dir, exist_ok=True)  # Create output directory if it doesn't exist
+                audio_path = os.path.join(refrence_dir, "random_sample.wav")
                 
                 try:
                     # Save the audio data using soundfile
@@ -407,7 +407,7 @@ class MusicGenerationService(AIModelService):
             return
 
         try:
-            score, table1, table2 = self.score_output("/tmp/music/", output_path, prompt)
+            score, table1, table2 = self.score_output("/tmp/music/", refrence_dir, prompt)
             if duration < 15:
                 score = self.score_adjustment(score, duration)
                 bt.logging.info(f"Score updated based on short duration than required: {score}")
@@ -454,11 +454,11 @@ class MusicGenerationService(AIModelService):
                 return score * multiplier
         return score
 
-    def score_output(self, output_path, target_audio , prompt):
+    def score_output(self, output_path, refrence_dir , prompt):
         """Evaluates and returns the score for the generated music output."""
         try:
             score_object = MusicQualityEvaluator()
-            return score_object.evaluate_music_quality(output_path, target_audio, prompt)
+            return score_object.evaluate_music_quality(output_path, refrence_dir, prompt)
         except Exception as e:
             bt.logging.error(f"Error scoring output: {e}")
             return 0.0
