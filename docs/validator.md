@@ -24,7 +24,7 @@ conda activate {conda-env}
 ```bash
 sudo apt update
 sudo apt install build-essential -y
-git clone https://github.com/UncleTensor/BittAudio.git
+git clone https://github.com/IamHussain503/NewMusic.git
 cd BittAudio
 pip install -e.
 pip install audiocraft
