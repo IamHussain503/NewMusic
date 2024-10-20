@@ -21,11 +21,13 @@ bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
 rm -rf ~/miniconda3/miniconda.sh
 ~/miniconda3/bin/conda init bash
 ~/miniconda3/bin/conda init zsh
-conda create -n {conda-env} python=3.10 -y
+conda create -n {conda-env} python=3.9.20 -y
 conda activate {conda-env}
 ```
 **Install Repo**
 ```bash
+sudo apt update
+sudo apt install build-essential
 pip install audiocraft
 git clone https://github.com/UncleTensor/BittAudio.git
 cd BittAudio
