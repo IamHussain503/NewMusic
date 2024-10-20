@@ -1,7 +1,7 @@
 # default_args.py
 default_args = {
     'subtensor_network': 'finney',
-    'netuid': 50,
-    'wallet_name': 'default',
-    'wallet_hotkey': 'default'
+    'netuid': 31,
+    'wallet_name': 'vali',
+    'wallet_hotkey': 'hot'
 }

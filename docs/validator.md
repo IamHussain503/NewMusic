@@ -8,11 +8,6 @@ Validators initiate the audio generation process by providing prompts to the Min
 ## Installation
 Follow these steps to install the necessary components:
 
-**Export Corcel API key**
-```bash
-echo "export CORCEL_API_KEY=XXXXXXXXXXXXXXX">>~/.bashrc && source ~/.bashrc
-```
-
 **Set Conda Enviornment**
 ```bash
 mkdir -p ~/miniconda3
@@ -35,6 +30,7 @@ pip install -e.
 pip install audiocraft
 pip install laion_clap==1.1.4
 pip install git+https://github.com/haoheliu/audioldm_eval
+pip install git+https://github.com/kkoutini/passt_hear21@0.0.19#egg=hear21passt
 wandb login
 ```
 **Install pm2**
