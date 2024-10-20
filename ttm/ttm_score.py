@@ -170,7 +170,13 @@ class MusicQualityEvaluator:
       self.normalizer = Normalizer()
       self.aggregator = Aggregator()
 
-    def evaluate_music_quality(self, generated_audio_dir, target_audio_dir, text=None):
+    def get_directory(self, path):
+        return os.path.dirname(path)
+
+    def evaluate_music_quality(self, generated_audio, target_audio, text=None):
+      
+      generated_audio_dir = self.get_directory(generated_audio)
+      target_audio_dir = self.get_directory(target_audio)
 
       try:
           kld_score = self.metric_evaluator.calculate_kld(generated_audio_dir, target_audio_dir)
