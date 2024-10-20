@@ -178,6 +178,9 @@ class MusicQualityEvaluator:
       generated_audio_dir = self.get_directory(generated_audio)
       target_audio_dir = self.get_directory(target_audio)
 
+      bt.logging.info(f"Generated audio directory: {generated_audio_dir}")
+      bt.logging.info(f"Target audio directory: {target_audio_dir}")
+
       try:
           kld_score = self.metric_evaluator.calculate_kld(generated_audio_dir, target_audio_dir)
       except:
