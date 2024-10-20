@@ -20,6 +20,7 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/
 bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
 rm -rf ~/miniconda3/miniconda.sh
 ~/miniconda3/bin/conda init bash
+bash
 ~/miniconda3/bin/conda init zsh
 conda create -n {conda-env} python=3.9.20 -y
 conda activate {conda-env}
@@ -28,10 +29,10 @@ conda activate {conda-env}
 ```bash
 sudo apt update
 sudo apt install build-essential -y
-pip install audiocraft
 git clone https://github.com/UncleTensor/BittAudio.git
 cd BittAudio
-pip install -e
+pip install -e.
+pip install audiocraft
 pip install laion_clap==1.1.4
 pip install git+https://github.com/haoheliu/audioldm_eval
 wandb login
